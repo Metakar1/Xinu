@@ -2,22 +2,23 @@
 
 #include <xinu.h>
 
+void busy_wait(void) {
+	while (1);
+}
+
+void wait_sleep(void) {
+	uint32 count = 0;
+	while (++count < 130000);
+	sleepms(15);
+	while (1);
+}
+
 process	main(void)
 {
-
-	/* Run the Xinu shell */
-
-	recvclr();
-	resume(create(shell, 8192, 50, "shell", 1, CONSOLE));
-
-	/* Wait for shell to exit and recreate it */
-
-	while (TRUE) {
-		receive();
-		sleepms(200);
-		kprintf("\n\nMain process recreating shell\n\n");
-		resume(create(shell, 4096, 20, "shell", 1, CONSOLE));
-	}
+	// resume(create(busy_wait, 1024, 50, "T1", 0));
+	// resume(create(busy_wait, 1024, 40, "T2", 0));
+	// resume(create(busy_wait, 1024, 30, "T3", 0));
+	// resume(create(busy_wait, 1024, 40, "T4", 0));
+	resume(create(wait_sleep, 1024, 50, "T1", 0));
 	return OK;
-    
 }

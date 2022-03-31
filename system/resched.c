@@ -12,6 +12,7 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 {
 	struct procent *ptold;	/* Ptr to table entry for old process	*/
 	struct procent *ptnew;	/* Ptr to table entry for new process	*/
+	static uint32 last_time = 0;
 
 	/* If rescheduling is deferred, record attempt and return */
 
@@ -23,16 +24,18 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	/* Point to process table entry for the current (old) process */
 
 	ptold = &proctab[currpid];
+	ptold->preempt = (preempt <= 0 ? 0 : preempt);
 
-	if (ptold->prstate == PR_CURR) {  /* Process remains eligible */
-		if (ptold->prprio > firstkey(readylist)) {
-			return;
-		}
+	kprintf("Process %s ran %dms before reschedule.\n", ptold->prname, clktime * 1000 + count1000 - last_time);
 
+	if (ptold->prstate == PR_CURR) {
 		/* Old process will no longer remain current */
 
 		ptold->prstate = PR_READY;
-		insert(currpid, readylist, ptold->prprio);
+		if (currpid == 0)
+			insert(currpid, readylist, -1);
+		else
+			insert(currpid, readylist, ptold->preempt);
 	}
 
 	/* Force context switch to highest priority ready process */
@@ -40,7 +43,24 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	currpid = dequeue(readylist);
 	ptnew = &proctab[currpid];
 	ptnew->prstate = PR_CURR;
-	preempt = QUANTUM;		/* Reset time slice for process	*/
+
+	if (ptnew->preempt == 0) {
+		switch (ptnew->prprio) {
+			case 30:
+				ptnew->preempt = T3;
+				break;
+			case 40:
+				ptnew->preempt = T2;
+				break;
+			case 50:
+				ptnew->preempt = T1;
+				break;
+			default:
+				ptnew->preempt = QUANTUM;
+		}
+	}
+	last_time = clktime * 1000 + count1000;
+	preempt = ptnew->preempt;		/* Reset time slice for process	*/
 	ctxsw(&ptold->prstkptr, &ptnew->prstkptr);
 
 	/* Old process returns here when resumed */
