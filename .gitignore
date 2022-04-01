@@ -19,3 +19,4 @@
 /.vscode
 /compile/.cache
 /compile/compile_commands.json
+/.clang-format
