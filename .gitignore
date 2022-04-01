@@ -15,3 +15,7 @@
 
 /.gdb_history
 /.gdb.pid
+
+/.vscode
+/compile/.cache
+/compile/compile_commands.json
