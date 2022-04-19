@@ -18,5 +18,6 @@
 
 /.vscode
 /compile/.cache
+/compile/.gdbinit
 /compile/compile_commands.json
 /.clang-format
