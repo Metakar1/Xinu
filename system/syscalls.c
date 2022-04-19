@@ -39,7 +39,7 @@ uint32 do_syscall(uint32 id, uint32 args_count, ...) {
 	    movl %3, %%edx; \
 	    int $0x2e" // syscall handler
 	    :
-	    : "g"((int)syscalls[id]), "g"((int)ptr_return_value), "g"(args_count), "g"((int)args_array)
+	    : "g"(syscalls[id]), "g"(ptr_return_value), "g"(args_count), "g"(args_array)
 	    : "eax", "ebx", "ecx", "edx");
 
 	return return_value;
