@@ -50,7 +50,9 @@ struct procent {            /* Entry in the process table		*/
 	umsg32  prmsg;          /* Message sent to this process		*/
 	bool8   prhasmsg;       /* Nonzero iff msg is valid		*/
 	int16   prdesc[NDESC];  /* Device descriptors for process	*/
-	uint32 *prksesp;
+	char   *prustkptr;      /* Saved user stack pointer */
+	char   *prustkbase;     /* Base of user stack */
+	uint32 *prksesp;        /* Points to esp of the kernel stack */
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

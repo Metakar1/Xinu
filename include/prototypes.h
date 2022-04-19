@@ -4,6 +4,8 @@ extern uint32 do_syscall(uint32 id, uint32 args_count, ...);
 
 /* in file addargs.c */
 extern	status	addargs(pid32, int32, int32[], int32,char *, void *);
+#define syscall_addargs(...) \
+		do_generic_syscall(status, SYSCALL_ADDARGS, __VA_ARGS__)
 
 
 /* in file ascdate.c */
