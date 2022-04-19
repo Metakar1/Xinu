@@ -2,9 +2,7 @@
 
 #include <xinu.h>
 
-process	main(void)
-{
-
+process main(void) {
 	/* Run the Xinu shell */
 
 	syscall_recvclr();
@@ -19,5 +17,4 @@ process	main(void)
 		syscall_resume(syscall_create(shell, 4096, 20, "shell", 1, CONSOLE));
 	}
 	return OK;
-    
 }

@@ -47,7 +47,7 @@
 #define	MULTIBOOT_HEADER_FLAGS  0x00010003
 #define MULTIBOOT_SIGNATURE	0x2BADB002	/* Multiboot signature verification	*/
 #define MULTIBOOT_BOOTINFO_MMAP	0x00000040	/* mmap_length mmap_addr valid		*/
-#define	GDT_ENTRIES		4
+#define	GDT_ENTRIES		8
 #define	GDT_ENTRY_SIZE		8
 #define	GDT_BYTES		(GDT_ENTRIES * GDT_ENTRY_SIZE)
 #define	IDT_ENTRIES		256
@@ -198,6 +198,7 @@ mmap_search_done:
 	call	setsegs
 
 	lgdt	gdtr
+	call	ltss
 	/*
 	 * Reload segment registers; load code segment by a far
 	 * jump
@@ -348,3 +349,15 @@ cpuid:
 	cpuid
 	popl	%ebx
 	ret			# return value in %eax
+
+	# ltss() - load TR
+	.globl ltss
+ltss:
+	movl $0x38, %eax
+	ltr %ax
+	ret
+
+	# ret_k2u() - return from kernel mode
+	.globl ret_k2u
+ret_k2u:
+	iret
