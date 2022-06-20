@@ -1,5 +1,6 @@
 /* kill.c - kill */
 
+#include "vm.h"
 #include <xinu.h>
 
 /*------------------------------------------------------------------------
@@ -29,7 +30,16 @@ syscall	kill(
 	for (i=0; i<3; i++) {
 		close(prptr->prdesc[i]);
 	}
-	freestk(prptr->prstkbase, prptr->prstklen);
+
+	/* Release memory */
+	freestk(prptr->prstkbase, 8192);
+	freestk(prptr->prustkbase, prptr->prstklen);
+	unmap_child_pm();
+	page_directory_entry_t *page_dir = (page_directory_entry_t *)((2 << 22) | (2 << 12));
+	for (uint32 i = 0; i <= 1015; i++) { /* Not unset present bit because current process is running */
+		if (page_dir[i].present)
+			release_page(page_dir[i].address << 12);
+	}
 
 	switch (prptr->prstate) {
 	case PR_CURR:

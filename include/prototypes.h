@@ -43,7 +43,7 @@ extern	pid32	create(void *, uint32, pri16, char *, uint32, ...);
 		do_generic_syscall(pid32, SYSCALL_CREATE, __VA_ARGS__)
 
 /* in file ctxsw.S */
-extern	void	ctxsw(void *, void *);
+extern	void	ctxsw(void *, void *, uint32);
 
 /* in file exit.c */
 extern	void	exit(void);

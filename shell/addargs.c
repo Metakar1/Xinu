@@ -18,11 +18,11 @@ status addargs(pid32 pid,    /* ID of process to use		*/
                              /*   be replaced by a pointer	*/
                              /*   to an argument vector	*/
 ) {
-	intmask         mask;  /* Saved interrupt mask		*/
-	struct procent *prptr; /* Ptr to process' table entry	*/
-	uint32          aloc;  /* Argument location in process	*/
+	intmask         mask;              /* Saved interrupt mask		*/
+	struct procent *prptr;             /* Ptr to process' table entry	*/
+	uint32          aloc, aloc_in_prt; /* Argument location in process	*/
 	/*   stack as an integer	*/
-	uint32 *argloc; /* Location in process's stack	*/
+	uint32 *argloc, *argloc_in_prt; /* Location in process's stack	*/
 	/*   to place args vector	*/
 	char *argstr; /* Location in process's stack	*/
 	/*   to place arg strings	*/
@@ -47,7 +47,9 @@ status addargs(pid32 pid,    /* ID of process to use		*/
 	/*	strings							*/
 
 	aloc = (uint32)(prptr->prustkbase - prptr->prstklen + sizeof(uint32));
+	aloc_in_prt = (uint32)(prptr->prustkbase_in_prt - prptr->prstklen + sizeof(uint32));
 	argloc = (uint32 *)((aloc + 3) & ~0x3); /* round multiple of 4	*/
+	argloc_in_prt = (uint32 *)((aloc_in_prt + 3) & ~0x3);
 
 	/* Compute the first location beyond args array for the strings	*/
 
@@ -56,7 +58,7 @@ status addargs(pid32 pid,    /* ID of process to use		*/
 	/* Set each location in the args vector to be the address of	*/
 	/*	string area plus the offset of this argument		*/
 
-	for (aptr = argloc, i = 0; i < ntok; i++) {
+	for (aptr = argloc_in_prt, i = 0; i < ntok; i++) {
 		*aptr++ = (uint32)(argstr + tok[i]);
 	}
 
@@ -71,7 +73,7 @@ status addargs(pid32 pid,    /* ID of process to use		*/
 
 	/* Find the second argument in process's stack */
 
-	for (search = (uint32 *)prptr->prustkptr; search < (uint32 *)prptr->prustkbase; search++) {
+	for (search = (uint32 *)prptr->prustkptr_in_prt; search < (uint32 *)prptr->prustkbase_in_prt; search++) {
 		/* If found, replace with the address of the args vector*/
 
 		if (*search == (uint32)dummy) {

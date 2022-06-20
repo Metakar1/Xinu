@@ -44,25 +44,15 @@ pid32 currpid; /* ID of currently executing process	*/
  *------------------------------------------------------------------------
  */
 
+extern uint32 free_page_stack_top;
 void nulluser() {
-	struct memblk *memptr;   /* Ptr to memory block		*/
-	uint32         free_mem; /* Total amount of free memory	*/
-
 	/* Initialize the system */
 
 	sysinit();
 
 	/* Output Xinu memory layout */
-	free_mem = 0;
-	for (memptr = memlist.mnext; memptr != NULL; memptr = memptr->mnext) {
-		free_mem += memptr->mlength;
-	}
 
-	kprintf("%10d bytes of free memory.  Free list:\n", free_mem);
-	for (memptr = memlist.mnext; memptr != NULL; memptr = memptr->mnext) {
-		kprintf("           [0x%08X to 0x%08X]\n", (uint32)memptr, ((uint32)memptr) + memptr->mlength - 1);
-	}
-
+	kprintf("%10d bytes of free memory.\n", free_page_stack_top * 4096);
 	kprintf("%10d bytes of Xinu code.\n", (uint32)&etext - (uint32)&text);
 	kprintf("           [0x%08X to 0x%08X]\n", (uint32)&text, (uint32)&etext - 1);
 	kprintf("%10d bytes of data.\n", (uint32)&ebss - (uint32)&data);
@@ -128,10 +118,6 @@ static void sysinit() {
 
 	initevec();
 
-	/* Initialize free memory list */
-
-	meminit();
-
 	/* Initialize system variables */
 
 	/* Count the Null process as the first process in the system */
@@ -158,7 +144,7 @@ static void sysinit() {
 	prptr->prstate = PR_CURR;
 	prptr->prprio = 0;
 	strncpy(prptr->prname, "prnull", 7);
-	prptr->prstkbase = getstk(NULLSTK);
+	prptr->prstkbase = ((void *)&end) + 8192 - 4;
 	prptr->prstklen = NULLSTK;
 	prptr->prstkptr = 0;
 	currpid = NULLPROC;
