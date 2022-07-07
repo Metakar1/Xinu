@@ -457,3 +457,11 @@ extern	syscall	yield(void);
 #define	ntohs(x)  ((0xff & ((x)>>8)) | ( (0xff & (x)) << 8))
 #define	ntohl(x)  ((((x)>>24) & 0x000000ff) | (((x)>> 8) & 0x0000ff00) | \
 		   (((x)<<8) & 0x00ff0000) | (((x)<<24) & 0xff000000))
+
+/* in directory kbdvga */
+extern devcall kbdgetc(struct dentry *devptr);
+extern devcall kbdread(struct dentry *devptr, char *buff, int32 count);
+extern devcall vgaputc(struct dentry *devptr, char ch);
+extern devcall kbdvgainit(void);
+extern interrupt kbddisp(void);
+extern void kbdhandler(void);

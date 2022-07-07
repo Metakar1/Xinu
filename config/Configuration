@@ -64,13 +64,21 @@ nam:
 		-w ioerr 	-s ioerr 	-n ioerr
 		-intr ioerr
 
+/* type of a keyboard and screen device */
+kbdvga:
+	on kbdvga
+		-i kbdvgainit -o ionull  -c ionull
+		-r kbdread    -g kbdgetc -p vgaputc
+		-w ioerr      -s ioerr   -n ionull
+		-intr kbddisp
 %%
 
 /* Actual device declarations that each give the name of a device that	*/
 /*   will be present in the system					*/
 
    /* Define the console device to be a tty and specify CSR*/
-   CONSOLE is tty  on uart  csr 0001770 -irq 0044
+   /* CONSOLE is tty  on uart  csr 0001770 -irq 0044 */
+   CONSOLE is kbdvga on kbdvga csr 0001724 -irq 0041
 
    /* Define a null device */
    NULLDEV is null on nothing
