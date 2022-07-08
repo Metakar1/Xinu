@@ -78,6 +78,19 @@ devcall vgaputc(struct dentry *devptr, char ch) {
 	return OK;
 }
 
+devcall vgawrite(struct dentry *devptr, char *buff, int32 count) {
+	if (count < 0) {
+		return SYSERR;
+	}
+	else if (count == 0) {
+		return OK;
+	}
+
+	for (int32 i = 0; i < count; i++)
+		vgaputc(devptr, buff[i]);
+	return OK;
+}
+
 void vgaerase1(uint32 c) {
 	if (c == '\t') { // tab
 		for (uint32 i = 0; i < 8; i++)

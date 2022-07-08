@@ -10,5 +10,6 @@
  */
 shellcmd xsh_test(int nargs, char *args[]) {
 	syscall_printf("12345678\t123456789\n123\t\t123456789\n\tabababababhbhjbjbjhASASAS\n\n\n\n\n\n\n\n\n\nab\bA\n");
+	syscall_printf("12345678\n123\t\b7\n");
 	return 0;
 }

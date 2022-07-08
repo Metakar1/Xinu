@@ -69,7 +69,7 @@ kbdvga:
 	on kbdvga
 		-i kbdvgainit -o ionull  -c ionull
 		-r kbdread    -g kbdgetc -p vgaputc
-		-w ioerr      -s ioerr   -n ionull
+		-w vgawrite   -s ioerr   -n ionull
 		-intr kbddisp
 %%
 

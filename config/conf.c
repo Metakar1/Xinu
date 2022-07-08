@@ -22,7 +22,7 @@ struct	dentry	devtab[NDEVS] =
 /* CONSOLE is kbdvga */
 	{ 0, 0, "CONSOLE",
 	  (void *)kbdvgainit, (void *)ionull, (void *)ionull,
-	  (void *)kbdread, (void *)ioerr, (void *)ioerr,
+	  (void *)kbdread, (void *)vgawrite, (void *)ioerr,
 	  (void *)kbdgetc, (void *)vgaputc, (void *)ionull,
 	  (void *)0x3d4, (void *)kbddisp, 33 },
 
