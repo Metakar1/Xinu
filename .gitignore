@@ -21,3 +21,4 @@
 /compile/.gdbinit
 /compile/compile_commands.json
 /.clang-format
+/compile/hdd.img
